@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+<body>
+    {% block content %}
+        <h1 class="display-4" style="background-color: coral">User delete</h1>
+        <form method="post">{% csrf_token %}
+            <p>Do you want to delete the user {{ object.username }}?</p>
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a class="btn btn-dark" href="../../user/userList">Cancel</a>
+        </form>
+    {% endblock %}

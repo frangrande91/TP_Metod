@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user %}
+        <!––tasks list -->
+            <div class="card border-primary mb-3" style="max-width: 20rem;">
+          <div class="card-header">Task type</div>
+              <div class="card-body">
+                <h4 class="card-title">Task_name</h4>
+                <p class="card-text">task_description</p>
+              </div>
+        </div>
+    {% endif %}
+{% endblock content%}
