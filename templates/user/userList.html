@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+    {% block content %}
+    {% if object_list %}
+    <h1 class="display-3" style="background-color: coral">User list</h1>
+    <table class="table table-dark table-striped">
+        <tr class="table-light">
+            <th>Id</th>
+            <th>Username</th>
+            <td>First name</td>
+            <td>Last name</td>
+            <th>Email</th>
+            <th>Options</th>
+        </tr>
+        {% for user in object_list %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td> <a class="btn btn-secondary" href="../../user/update/{{ user.id }}">Update</a>
+             &nbsp <a class="btn btn-danger" href="../../user/delete/{{ user.id }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <h1 class="display-5">No registered users</h1>
+    {% endif %}
+    {% endblock %}
