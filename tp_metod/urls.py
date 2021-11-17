@@ -26,6 +26,6 @@ urlpatterns = [
     path('accounts/login/', userLogin),
     #path('accounts/login/', Login.as_view()),
     path('user/', include('user.urls')),
-    path('', include('tasks.url'))
+    path('tasks/', include('tasks.url'))
 
 ]
