@@ -40,6 +40,7 @@ class Login(FormView):
     success_url = '/home'
 """
 
+
 def userById(request, user_id):
     user = User.objects.get(id=user_id)
     return render(request, 'user/profile.html', {'user' : user})
@@ -50,17 +51,20 @@ class UserList(ListView):
     template_name = 'user/userList.html'
     queryset = User.objects.all()
 
+
 class Register(CreateView):
     model = User
     form_class = UserForm
     template_name = 'user/register.html'
     success_url = '/user/userList'
 
+
 class UserUpdate(UpdateView):
     model = User
     form_class = UserForm
     template_name = 'user/update.html'
     success_url = '/user/userList'
+
 
 class UserDelete(DeleteView):
     model = User

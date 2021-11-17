@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+
+    <div class="card border-primary mb-3" style="max-width: 20rem;">
+          <div class="card-header"><h4 class="card-title">Task Category</h4></div>
+          <div class="card-header">Add task
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-8" style="padding: 10px;">{{ form.title }}</div>
+                    <div class="col-4" style="padding: 10px;"><input class="btn btn-success" type="submit" value="Create"></div>
+                </div>
+            </form>
+          </div>
+                <div class="card-body">
+                    {% for task in tasks %}
+                    <div class="row">
+                        <div class="col-4" style="padding: 10px;">
+                            {% if task.complete == True %}
+                                <p class="card-text"> <strike>{{ task.title }}</strike></p>
+                            {% else %}
+                                <p class="card-text"><span>{{ task.title }}</span></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-4" style="padding: 10px;">
+                            <a class="btn btn-info" href="{% url 'update_task' task.id %}">Update</a>
+                        </div>
+                        <div class="col-4" style="padding: 10px;">
+                            <a class="btn btn-danger" href="{% url 'delete_task' task.id %}">Delete</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+    </div>
+{% endblock %}
