@@ -8,12 +8,15 @@ from .form import *
 
 def index(request):
     tasks = Task.objects.all()
-
+    print('request:' + request.method)
     if request.method == 'POST':
+        print('LLEGUE post')
         form = TaskForm(request.POST)
         if form.is_valid():
+
             form.save()
-        return redirect('/')
+            context = {'tasks': tasks, 'form': form}
+        return render(request, 'tasks/list.html', context)
 
     form = TaskForm()
     context = {'tasks': tasks, 'form': form}
