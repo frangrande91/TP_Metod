@@ -5,8 +5,9 @@ from tasks import views
 # from tasks.views import CategoryList
 
 urlpatterns = [
-    path('list/', views.list_task, name="list"),
-    path('update-task/<str:pk>/', views.TaskUpdate.as_view(), name="update_task"),
-    path('delete-task/<str:pk>/', views.TaskDelete.as_view(), name="delete_task"),
-    path('board-view/<str:pk>/', views.board_view, name="list-board-view"),
+    # path('list/', views.list_task, name="list"),
+    path('update-task/<str:pk>/', views.update_task, name="update_task"),
+    path('delete-task/<str:pk>/', views.delete_task , name="delete_task"),
+    path('category-add/<str:pk>/', views.CategoryCreate.as_view(), name="category-add"),
+    path('board-view/<str:pk>/', views.board_view, name="board-view"),
 ]

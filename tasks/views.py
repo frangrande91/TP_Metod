@@ -1,14 +1,9 @@
 from django.shortcuts import render, redirect
-
-
-from django.http import HttpResponse
-
-from tasks.models import *
 from .form import *
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 
-
+"""
 def list_task(request):
     tasks = Task.objects.all()
     if request.method == 'POST':
@@ -20,7 +15,7 @@ def list_task(request):
 
     form = TaskForm()
     context = {'tasks': tasks, 'form': form}
-    return render(request, 'tasks/list-task.html', context)
+    return render(request, 'tasks/list-task.html', context)"""
 
 
 def update_task(request, pk):
@@ -31,41 +26,36 @@ def update_task(request, pk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-        return redirect("/")
+        return redirect('/tasks/board-view/'+task.category.board.id.__str__())
 
     context = {'form': form}
 
     return render(request, 'tasks/update-task.html', context)
 
-"""
+
 def delete_task(request, pk):
     item = Task.objects.get(id=pk)
 
-    print(item)
-
     if request.method == 'POST':
         item.delete()
-        return redirect('/')
+        return redirect('/tasks/board-view/'+item.category.board.id.__str__())
 
     context = {'item': item}
-    return render(request, 'tasks/delete-task.html', context)"""
-
-def get_current_path(request):
-    return { 'current_path': request.get_full_path() }
+    return render(request, 'tasks/delete-task.html', context)
 
 
 class TaskDelete(DeleteView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/delete-task.html'
-    success_url = '/tasks/board-view/'+"1"
+    success_url = '/tasks/board-view/'
 
 
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update-task.html'
-    success_url = '/tasks/board-view/'+"1"
+    # success_url = '/tasks/board-view/'
 
 
 class CategoryCreate(CreateView):
@@ -73,6 +63,12 @@ class CategoryCreate(CreateView):
     form_class = CategoryForm
     template_name = 'tasks/register.html'
     success_url = '/user/userList'
+
+
+
+
+
+
 
 def board_view(request, pk):
     board = Board.objects.get(id=pk)
