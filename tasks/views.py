@@ -64,10 +64,11 @@ class CategoryCreate(CreateView):
     template_name = 'tasks/register.html'
     success_url = '/user/userList'
 
-
-
-
-
+def CategoryCreate(request, pk):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
 
 
 def board_view(request, pk):
