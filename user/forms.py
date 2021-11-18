@@ -3,7 +3,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
 
-
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -28,6 +27,7 @@ class UserForm(forms.ModelForm):
             'password': forms.PasswordInput(attrs={'class': 'form-control'}),
 
         }
+
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
