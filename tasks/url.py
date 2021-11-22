@@ -13,5 +13,8 @@ urlpatterns = [
     path('board-view/<str:pk>/', views.board_view, name="board-view"),
     path('update-category/<str:pk>/', views.update_category, name="update_category"),
     path('delete-category/<str:pk>/', views.delete_category, name="delete_category"),
-
+    path('board-list/', views.BoardList.as_view(), name="board-list"),
+    path('board-create/', views.BoardCreate.as_view(), name="board-create"),
+    path('board-delete/<str:pk>/', views.BoardDelete.as_view(), name="board-delete"),
+    path('board-update/<str:pk>/', views.BoardUpdate.as_view(), name="board-update"),
 ]

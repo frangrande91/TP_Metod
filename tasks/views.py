@@ -63,6 +63,7 @@ class TaskUpdate(UpdateView):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/register.html'
+<<<<<<< HEAD
     success_url = '/user/userList'"""
 
 """def categoryCreate(request, pk):
@@ -131,6 +132,31 @@ def delete_category(request, pk):
     context = {'category': category}
     return render(request, 'tasks/delete-category.html', context)
 
+class BoardList(ListView):
+    model = Board
+    template_name = 'tasks/board-list.html'
+    queryset = Board.objects.all()
+
+
+class BoardCreate(CreateView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-create.html'
+    success_url = '/tasks/board-list/'
+
+
+class BoardDelete(DeleteView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-delete.html'
+    success_url = '/tasks/board-list/'
+
+
+class BoardUpdate(UpdateView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-update.html'
+    success_url = '/tasks/board-list/'
 
 """
 class CategoryList(ListView):
