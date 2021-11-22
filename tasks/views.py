@@ -65,11 +65,6 @@ class CategoryCreate(CreateView):
     success_url = '/user/userList'
 
 
-
-
-
-
-
 def board_view(request, pk):
     board = Board.objects.get(id=pk)
 
@@ -87,6 +82,31 @@ def board_view(request, pk):
     return render(request, 'tasks/board-view.html', context)
 
 
+class BoardList(ListView):
+    model = Board
+    template_name = 'tasks/board-list.html'
+    queryset = Board.objects.all()
+
+
+class BoardCreate(CreateView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-create.html'
+    success_url = '/tasks/board-list/'
+
+
+class BoardDelete(DeleteView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-delete.html'
+    success_url = '/tasks/board-list/'
+
+
+class BoardUpdate(UpdateView):
+    model = Board
+    form_class = BoardForm
+    template_name = 'tasks/board-update.html'
+    success_url = '/tasks/board-list/'
 
 """
 class CategoryList(ListView):

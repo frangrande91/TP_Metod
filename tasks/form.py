@@ -25,3 +25,13 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'})
         }
+
+
+class BoardForm(forms.ModelForm):
+    class Meta:
+        model = Board
+        fields = '__all__'
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'})
+        }

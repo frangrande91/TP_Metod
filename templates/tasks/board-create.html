@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <h1 class="display-4" style="background-color: coral">Board Create</h1>
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" value="Save" class="btn btn-dark">Create</button>
+        </form>
+    {% endblock %}
