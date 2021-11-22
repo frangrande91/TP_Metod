@@ -5,6 +5,7 @@ from django.contrib import messages
 
 # Create your views here.
 from django.contrib.auth import authenticate, login
+from django.template.defaulttags import csrf_token
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
@@ -23,8 +24,14 @@ def userLogin(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        #user = authenticate(request, username=username, password=password) NO FUNCIONA
+        user = User.objects.get(username=username)
+        print(user.username)
+        print(user.password)
+        #if user is not None:
+        print('USER')
+        print(user)
+        if user.password == password:
             login(request, user)
             return render(request, 'home.html')
 
@@ -32,18 +39,19 @@ def userLogin(request):
             messages.add_message(request, messages.INFO, 'Please log in.')
             return render(request, 'user/login.html')
 
-"""
-#LOGIN CON FORMVIEW
+
+"""#LOGIN CON FORMVIEW
 class Login(FormView):
     template_name = "user/login.html"
     form_class = LoginForm
-    success_url = '/home'
-"""
+    success_url = '/home'"""
+
+
 
 
 def userById(request, user_id):
     user = User.objects.get(id=user_id)
-    return render(request, 'user/profile.html', {'user' : user})
+    return render(request, 'user/profile.html', {'user': user})
 
 
 class UserList(ListView):
@@ -57,7 +65,6 @@ class Register(CreateView):
     form_class = UserForm
     template_name = 'user/register.html'
     success_url = '/user/userList'
-
 
 class UserUpdate(UpdateView):
     model = User

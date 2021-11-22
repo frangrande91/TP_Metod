@@ -1,18 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="content">
-
+    <h1 class="display-4" style="background-color: coral"> BOARD: "{{ board }}"</h1>
+    {% if form %}
     <div class="card border-primary" style="padding: 20px">
-        <h3 class="display-6">Add task to category</h3>
+        <h3 class="display-6">Add task</h3>
           <form method="POST">
             {% csrf_token %}
               <div class="row">
                 <div class="col-4">{{ form.title }}</div>
                 <div class="col-4">{{ form.category }}</div>
+                <div class="col-4">{{ form.description}}</div>
                 <div class="col-4"><input class="btn btn-success" type="submit" value="Create"></div>
               </div>
           </form>
     </div>
+    {% endif %}
+
+    <br><br>
+
+    {% if formCategory %}
+        <div class="card border-primary" style="padding: 20px">
+        <h3 class="display-6">Add category</h3>
+          <form method="POST">
+            {% csrf_token %}
+              <div class="row">
+                  <div class="col-4">{{ formCategory.name }}</div>
+                  <div class="col-4">{{ formCategory.board }}</div>
+                <div class="col-4"><input class="btn btn-success" type="submit" value="Create"></div>
+              </div>
+          </form>
+        </div>
+    {% endif %}
 
     <br><br>
 
@@ -21,7 +40,14 @@
             <div class="col-4">
 
                 <div class="card border-primary mb-3" style="max-width: 25rem;">
-                      <div class="card-header"><h4 class="card-title">{{ category.name }}</h4></div>
+                      <div class="card-header">
+                          <h4 class="card-title">{{ category.name }}
+                              <a href="{% url 'update_category' category.id %}"><i class="far fa-edit"></i></a>
+                              <a href="{% url 'delete_category' category.id %}"><i class="far fa-trash-alt"></i></a>
+                          </h4>
+                      </div>
+
+
                             <div class="card-body">
 
                                 {% for task in category.tasks.all %}
@@ -42,13 +68,14 @@
                         </div>
                    </div>
             {% endfor %}
-            <div class="col-4" style="padding: 10px;">
+           {% comment %} <div class="col-4" style="padding: 10px;">
                 <div class="card border-primary mb-3" style="width: 25rem; height:20rem;">
-               {% comment %} <div class="card-header"><h4 class="card-title">Add category</h4></div>{% endcomment %}
-                <div class="card-body">
-                    <button type="button" class="btn btn-success" style="width: 100%; height: 100%; font-size: 50px">+</button>
+                <div class="card-header"><h4 class="card-title">Add category</h4></div>
+                    <div class="card-body">
+                    <!--<button type="button" class="btn btn-success" style="width: 100%; height: 100%; font-size: 50px">+</button> -->
+                    <a class="btn btn-dark" href="../board-view.html">Add category</a>
                 </div>
-                </div>
+                </div>{% endcomment %}
             </div>
         </div>
     </div>

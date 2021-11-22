@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <h1 class="display-4" style="background-color: coral">Category delete</h1>
+        <form method="post">{% csrf_token %}
+            <p>Do you want to delete the category "{{ category.name }}"?</p>
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a class="btn btn-dark" href="../../board-view/{{ category.board.id }}"  >Cancel</a>
+        </form>
+    {% endblock %}
