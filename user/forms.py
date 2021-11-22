@@ -29,6 +29,7 @@ class UserForm(forms.ModelForm):
         }
 
 
+
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)

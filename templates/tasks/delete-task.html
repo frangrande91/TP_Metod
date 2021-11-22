@@ -3,7 +3,7 @@
     {% block content %}
         <h1 class="display-4" style="background-color: coral">Task delete</h1>
         <form method="post">{% csrf_token %}
-            <p>Do you want to delete the task {{ object.title }}?</p>
+            <p>Do you want to delete the task "{{ item.title }}"?</p>
             <button type="submit" class="btn btn-danger">Yes, delete</button>
             <a class="btn btn-dark" href="../../board-view/{{ item.category.board.id }}"  >Cancel</a>
         </form>
