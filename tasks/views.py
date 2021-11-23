@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+
 from .form import *
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
@@ -50,6 +52,7 @@ class TaskDelete(DeleteView):
     form_class = TaskForm
     template_name = 'tasks/delete-task.html'
     success_url = '/tasks/board-view/'
+
 
 
 class TaskUpdate(UpdateView):
