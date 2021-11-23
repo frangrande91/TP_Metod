@@ -21,8 +21,8 @@ from user.views import home, userLogin#, Login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
-    path('home/', home),
+    path('', login_required(home)),
+    path('home/', login_required(home)),
     path('accounts/login/', userLogin),
     #path('accounts/login/', Login.as_view()),
     path('user/', include('user.urls')),
