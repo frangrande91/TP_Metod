@@ -8,10 +8,12 @@
           <form method="POST">
             {% csrf_token %}
               <div class="row">
-                <div class="col-4">{{ form.title }}</div>
-                <div class="col-4">{{ form.category }}</div>
-                <div class="col-4">{{ form.description}}</div>
-                <div class="col-4"><input class="btn btn-success" type="submit" value="Create"></div>
+                <div class="col-4">Tittle{{ form.title }}</div>
+                <div class="col-4">Category{{ form.category }}</div>
+                <div class="col-4">Status{{ form.status }}</div>
+                  <br><br>
+                <div class="col-4">Description{{ form.description}}</div>
+                <div class="col-4"><br><input class="btn btn-success" type="submit" value="Create"></div>
               </div>
           </form>
     </div>
@@ -56,11 +58,13 @@
                                            <p class="card-text"><span>{{ task.title }}</span></p>
                                     </div>
                                     <div class="col-4" style="padding: 10px;">
-                                        <a class="btn btn-info" href="{% url 'update_task' task.id %}">Update</a>
+                                           <p class="card-text"><span>Status: {{ task.status }}</span></p>
                                     </div>
                                     <div class="col-4" style="padding: 10px;">
-                                        <a class="btn btn-danger" href="{% url 'delete_task' task.id %}">Delete</a>
+                                        <a class="btn btn-info" href="{% url 'update_task' task.id %}"><i class="far fa-edit"></i></a>
+                                        <a class="btn btn-danger" href="{% url 'delete_task' task.id %}"><i class="far fa-trash-alt"></i></a>
                                     </div>
+
                                 </div>
                                 {% endfor %}
 
