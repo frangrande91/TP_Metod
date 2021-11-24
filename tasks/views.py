@@ -138,7 +138,13 @@ def delete_category(request, pk):
 class BoardList(ListView):
     model = Board
     template_name = 'tasks/board-list.html'
-    queryset = Board.objects.all()
+    # queryset = Board.objects.all()
+
+    def get_queryset(self):
+        own = Board.objects.filter(owner= self.request.user.id)
+        myuser = MyUser.objects.get(user_ptr_id = self.request.user.id)
+        collab =  myuser.boardsToCollaborate.all()
+        return own | collab
 
 
 class BoardCreate(CreateView):
@@ -146,6 +152,13 @@ class BoardCreate(CreateView):
     form_class = BoardForm
     template_name = 'tasks/board-create.html'
     success_url = '/tasks/board-list/'
+
+    def form_valid(self, form):
+        board = form.save(commit=False)
+        board.owner_id = self.request.user.id
+        # app_model.user = User.objects.get(user=self.request.user) # Or explicit model
+        board.save()
+        return super().form_valid(form)
 
 
 class BoardDelete(DeleteView):

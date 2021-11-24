@@ -16,7 +16,7 @@ from user.models import MyUser
 
 
 def home(request):
-    return render(request, 'home.html')
+    return redirect('board-list')
 
 
 @csrf_exempt
@@ -31,7 +31,7 @@ def userLogin(request):
         #if user is not None:
         if user.password == password:
             login(request, user)
-            return render(request, 'home.html')
+            return redirect('board-list')
 
         else:
             messages.add_message(request, messages.INFO, 'Please log in.')
@@ -73,7 +73,7 @@ def register(request):
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('/tasks/register/')
+        return redirect('login')
 
     context = {'form': form}
 
