@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from .form import *
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
-from tasks.serializers import TaskSerializer
+from tasks.serializers import TaskSerializer, CategorySerializer, BoardSerializer
 from rest_framework import viewsets, permissions
 
 """
@@ -177,10 +177,12 @@ class TaskAdd(CreateView):
     template_name = 'tasks/task-add.html'
     success_url = 'tasks/board-view.html'"""
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()   # Por ahora trae todas las tasks
-    serializer_class = TaskSerializer
+class TaskViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Board.objects.all()   # Por ahora trae todas las tasks
+    serializer_class = BoardSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
 
 
 
