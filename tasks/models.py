@@ -4,14 +4,9 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-from user.models import MyUser
+from django.db.models import TextChoices
 
-"""
-class Status(Enum):
-    done = 'Done',
-    inProgress = 'In progress',
-    pending = 'Pending'
-"""
+from user.models import MyUser
 
 
 class Board(models.Model):
@@ -41,10 +36,19 @@ class Category(models.Model):
         return self.name
 
 
+
+
+
 class Task(models.Model):
+
+    class Status(TextChoices):
+        toDo = 'To do'
+        inProgress = 'In progress'
+        done = 'Done'
+
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
-    # status = models.ForeignKey(Status, null=False, blank=False, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.toDo)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='tasks')
     date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500, default='')
