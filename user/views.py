@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.template.defaulttags import csrf_token
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView, DetailView
 
 from user.forms import UserForm, LoginForm
 from user.models import MyUser
@@ -43,8 +43,6 @@ class Login(FormView):
     template_name = "user/login.html"
     form_class = LoginForm
     success_url = '/home'"""
-
-
 
 
 def userById(request, user_id):
@@ -92,3 +90,9 @@ class UserDelete(DeleteView):
     form_class = UserForm
     template_name = 'user/delete.html'
     success_url = '/user/userList'
+
+
+class UserDetail(DetailView):
+    model = MyUser
+    template_name = 'user/friends.html'
+
