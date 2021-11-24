@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 
-from user.views import home, userLogin #, Login,
+from user.views import home, userLogin#, Login
 
 urlpatterns = [
     path('admin/', admin.site.urls),

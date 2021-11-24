@@ -11,6 +11,7 @@
             <td>First name</td>
             <td>Last name</td>
             <th>Email</th>
+            <th>Pass</th>
             <th>Options</th>
         </tr>
         {% for user in object_list %}
@@ -20,6 +21,7 @@
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
             <td>{{ user.email }}</td>
+            <td>{{ user.password }}</td>
             <td> <a class="btn btn-secondary" href="../../user/update/{{ user.id }}">Update</a>
              &nbsp <a class="btn btn-danger" href="../../user/delete/{{ user.id }}">Delete</a></td>
         </tr>
