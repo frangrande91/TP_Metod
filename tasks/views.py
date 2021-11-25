@@ -21,6 +21,7 @@ def list_task(request):
 
 ########## CRUD TASK AND CATEGORY #########
 
+
 def update_task(request, pk):
     task = Task.objects.get(id=pk)
     form = TaskForm(instance=task)
@@ -54,11 +55,11 @@ class TaskDelete(DeleteView):
     success_url = '/tasks/board-view/'
 
 
-
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update-task.html'
+
     # success_url = '/tasks/board-view/'
 
 
