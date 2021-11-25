@@ -20,4 +20,5 @@ urlpatterns = [
     path('board-create/', login_required(views.BoardCreate.as_view()), name="board-create"),
     path('board-delete/<str:pk>/', login_required(views.BoardDelete.as_view()), name="board-delete"),
     path('board-update/<str:pk>/', login_required(views.board_update), name="board-update"),
+    path('board-collaboration-exit/<str:pk_board>/', login_required(views.board_collaborate_exit), name="board-collaboration-exit"),
 ]

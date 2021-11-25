@@ -26,21 +26,16 @@ class Board(models.Model):
 
         return is_owner
 
-        # A partir del id de un board retorna una lista con el owner y los colaboradores del tablero
 
-    def getTeamBoard(pk_board):
-        board = Board.objects.get(pk=pk_board)
-        owner = board.owner
-        teamList = [owner]
-        users = MyUser.objects.all()
+    def is_collaborate(self, user):
+        team = self.team.all()
 
-        for user in users:
-            boards = user.boardsToCollaborate.all()
-            for b in boards:
-                if b == board:
-                    teamList.append(user)
+        for col in team:
+            if col.id == user.id:
+                return True
 
-        return teamList
+        return False
+
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)

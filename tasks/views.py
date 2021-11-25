@@ -1,10 +1,15 @@
+import json
+
 from django.contrib import messages
+from django.db.models import Manager
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 
 from .form import *
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
+from tasks.serializers import TaskSerializer, CategorySerializer, BoardSerializer
+from rest_framework import viewsets, permissions
 
 """
 def list_task(request):
@@ -208,14 +213,48 @@ def board_update(request, pk):
 
         if request.method == 'POST':
             board.name = request.POST['name']
+            collaborators = request.POST.getlist('collaborators')
+            print(collaborators)
+            team = board.team.all()
+
+            for col in team:
+                board.team.remove(col)
+
+            for col_id in collaborators:
+                user = MyUser.objects.get(id=col_id)
+                board.team.add(user)
             board.save()
+            return redirect('/tasks/board-list/')
 
+        currently_collaborators = board.team.all()
+        friends = user.friends.filter()
+        friends_no_collaborators = []
 
-        friends = user.friends.all()
-        context = {'board': board, 'friends': friends}
+        for friend in friends:
+            if not board.is_collaborate(friend):
+                friends_no_collaborators.append(friend)
+
+        context = {'board': board, 'currently_collaborators': currently_collaborators,
+                   'friends_no_collaborators': friends_no_collaborators}
         return render(request, 'tasks/board-update.html', context)
 
-    return render(request, 'tasks/board-list.html')
+    return redirect('/tasks/board-list/')
+
+
+def board_collaborate_exit(request, pk_board):
+
+    user = MyUser.objects.get(id=request.user.id)
+    board = Board.objects.get(id=pk_board)
+
+    if board.is_collaborate(user):
+        if request.method == 'POST':
+            board.team.remove(user)
+            return redirect('/tasks/board-list/')
+
+        context = {'board': board}
+        return render(request, 'tasks/board-collaboration-exit.html', context)
+
+    return redirect('/tasks/board-list/')
 
 
 
@@ -261,8 +300,6 @@ class BoardUpdate(UpdateView):
     success_url = '/tasks/board-list/'
 
 
-
-
 """
 class CategoryList(ListView):
     model = Category
@@ -276,3 +313,11 @@ class TaskAdd(CreateView):
     form_class = TaskForm
     template_name = 'tasks/task-add.html'
     success_url = 'tasks/board-view.html'"""
+
+class TaskViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(assigned_id=self.request.user.id)
+
