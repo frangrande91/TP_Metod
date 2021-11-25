@@ -26,6 +26,21 @@ class Board(models.Model):
 
         return is_owner
 
+        # A partir del id de un board retorna una lista con el owner y los colaboradores del tablero
+
+    def getTeamBoard(pk_board):
+        board = Board.objects.get(pk=pk_board)
+        owner = board.owner
+        teamList = [owner]
+        users = MyUser.objects.all()
+
+        for user in users:
+            boards = user.boardsToCollaborate.all()
+            for b in boards:
+                if b == board:
+                    teamList.append(user)
+
+        return teamList
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
@@ -50,7 +65,7 @@ class Task(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='tasks')
     date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500, default='')
-    assigned = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True)
+    assigned = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True)
 
 
     def __str__(self):

@@ -3,8 +3,6 @@ from django.forms import ModelForm
 from tasks.models import *
 
 
-
-
 class TaskForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -12,8 +10,11 @@ class TaskForm(ModelForm):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['category'] = forms.ModelChoiceField(
             queryset = Category.objects.filter(board_id=boardid),
-            widget=forms.Select(attrs={'class': 'form-control'})
-        )
+            widget=forms.Select(attrs={'class': 'form-control'}))
+        self.fields['assigned'] = forms.ModelChoiceField(
+            queryset = Board.objects.get(id=boardid).team #.add(Board.objects.get(id=boardid).owner),
+            ,widget=forms.Select(attrs={'class': 'form-control'}))
+
 
     class Meta:
         model = Task

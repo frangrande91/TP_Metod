@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout_then_login
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -72,6 +73,11 @@ def register(request):
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
+
+            send_mail('Welcome '+request.POST['username']+' - TO DO LIST',
+                      'Hi ' + request.POST['username']+'. Registered in TO DO LIST. Thanks for trusting us',
+                      'operador.todolist@gmail.com', [request.POST['email']])
+
         return redirect('board-list')
 
     context = {'form': form}
@@ -137,6 +143,12 @@ def friend_request_send(request, pk):
         friend_request.sender = sender
         friend_request.receiver = friend_to_add
         friend_request.save()
+
+        send_mail('Friend request - TO DO LIST',
+                  'User '+sender.username+'('+sender.email+') sent you a friend request on TO DO LIST. Login to your account to confirm',
+                  'operador.todolist@gmail.com',
+                  [friend_to_add.email])
+
         return redirect('/user/friends-add/')
 
     return render(request, 'user/friend-request-send.html', context)
@@ -153,6 +165,12 @@ def friend_request_confirm(request, pk_friend):
             sender.friends.add(receiver)
             receiver.save()
             sender.save()
+
+            send_mail('Friend request accepted - TO DO LIST',
+                      'User ' + receiver.username + '(' + receiver.email + ') accepted his friend request on TO DO LIST. Now you can share your projects',
+                      'operador.todolist@gmail.com',
+                      [sender.email])
+
             friend_request.delete()
             return redirect('/user/friends-add/')
 

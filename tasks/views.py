@@ -109,7 +109,6 @@ def board_view(request, pk):
     board = Board.objects.get(id=pk)    #obtengo el tablero pedido
     myUser = MyUser.objects.get(id=request.user.id)    #MyUser logueado
     boards = myUser.boardsToCollaborate.all()    #obtengo todos los tableros en los que el usuario es colaborador
-    collaborators = getTeamBoard(pk)
 
     if board.owner == myUser or board in boards:  # Valido que el usuario que está viendo el tablero sea el dueño o un coladorador
 
@@ -122,7 +121,10 @@ def board_view(request, pk):
             # Add task
             if form.is_valid():
                 form.save()
-                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board, 'collaborators': collaborators}
+
+                print(request.POST['assigned'])
+
+                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
                 return render(request, 'tasks/board-view.html', context)
 
             # Add category
@@ -143,20 +145,7 @@ def board_view(request, pk):
         return redirect('/tasks/board-list/')
 
 
-#A partir del id de un board retorna una lista con el owner y los colaboradores del tablero
-def getTeamBoard(pk_board):
-    board = Board.objects.get(pk=pk_board)
-    owner = board.owner
-    teamList = [owner]
-    users = MyUser.objects.all()
 
-    for user in users:
-        boards = user.boardsToCollaborate.all()
-        for b in boards:
-            if b == board:
-                teamList.append(user)
-
-    return teamList
 
 
 
