@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+    {% block content %}
+        <form method="post">{% csrf_token %}
+            <p class="display-6">Do you want send friend request to "{{ friend_to_add }}"?</p>
+            <button type="submit" class="btn btn-success btn-lg">Confirm</button>
+        </form>
+    {% endblock %}+

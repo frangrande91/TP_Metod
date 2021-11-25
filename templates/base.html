@@ -26,38 +26,43 @@
 
         <div class="collapse navbar-collapse" id="navbarColor02">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link active" href="../../home">Home
-                <span class="visually-hidden">(current)</span>
-              </a>
-            </li>
 
               {% if user.username %}
 
-            <li class="nav-item">
-              <a class="nav-link" href="#">My boards</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Friends</a>
-            </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'board-list' %}">My boards</a>
+                </li>
 
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: #E67E22">{{ user.username }}</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="../../../user/{{ user.id }}">Profile</a>
-                <a class="dropdown-item" href="#">Add board</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="../../user/logout">Logout</a>
-              </div>
-            </li>
+               <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: #E67E22">Friends</a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'friends-add' %}">Add</a>
+                    <a class="dropdown-item" href="{% url 'friends-list' user.id %}">List</a>
+                  </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: #E67E22">{{ user.username }}</a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="../../../user/{{ user.id }}">Profile</a>
+                    <a class="dropdown-item" href="{% url 'board-create' %}">Add board</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href={% url 'logout' %}>Logout</a>
+                  </div>
+                </li>
+
+              {% else %}
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
 
               {% endif %}
 
           </ul>
-          <form class="d-flex">
-            <input class="form-control me-sm-2" type="text" placeholder="Search">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-          </form>
         </div>
       </div>
     </nav>
@@ -127,11 +132,9 @@
       <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
 
         <!-- Content -->
-        <h6 class="text-uppercase font-weight-bold">Company name</h6>
+        <h6 class="text-uppercase font-weight-bold">Try To do list premium</h6>
         <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
-        <p>Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit amet,
-          consectetur
-          adipisicing elit.</p>
+        <p>Get unlimited boards, all the views, unlimited automation and more.</p>
 
       </div>
       <!-- Grid column -->
@@ -143,17 +146,15 @@
         <h6 class="text-uppercase font-weight-bold">Products</h6>
         <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
         <p>
-          <a href="#!">MDBootstrap</a>
+          <a href="#!">TDL Community</a>
         </p>
         <p>
-          <a href="#!">MDWordPress</a>
+          <a href="#!">TDL Premium</a>
         </p>
         <p>
-          <a href="#!">BrandFlow</a>
+          <a href="#!">TDL for businesses</a>
         </p>
-        <p>
-          <a href="#!">Bootstrap Angular</a>
-        </p>
+
 
       </div>
       <!-- Grid column -->
@@ -189,7 +190,7 @@
         <p>
           <i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
         <p>
-          <i class="fas fa-envelope mr-3"></i> info@example.com</p>
+          <i class="fas fa-envelope mr-3"></i> contact@todolist.com</p>
         <p>
           <i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
         <p>
@@ -206,7 +207,7 @@
 
   <!-- Copyright -->
   <div class="footer-copyright text-center py-3">© 2020 Copyright:
-    <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+    <a href="https://mdbootstrap.com/"> todolist.com</a>
   </div>
   <!-- Copyright -->
 

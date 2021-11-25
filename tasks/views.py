@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 
@@ -21,34 +22,55 @@ def list_task(request):
     context = {'tasks': tasks, 'form': form}
     return render(request, 'tasks/list-task.html', context)"""
 
+
 ########## CRUD TASK AND CATEGORY #########
 
+
 def update_task(request, pk):
-    task = Task.objects.get(id=pk)
-    form = TaskForm(instance=task)
 
-    if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-        return redirect('/tasks/board-view/'+task.category.board.id.__str__())
+    task = Task.objects.get(id=pk)  # obtengo la tarea a editar
+    board = task.category.board  # obtengo el tablero al que pertenece la tarea
+    myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
+    boards = myUser.boardsToCollaborate.all()  # obtengo todos los tableros en los que el usuario es colaborador
 
-    context = {'form': form}
+    if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a editar
 
-    return render(request, 'tasks/update-task.html', context)
+        form = TaskForm(instance=task, boardid=task.category.board.id)
+
+        if request.method == 'POST':
+            form = TaskForm(request.POST, instance=task, boardid=task.category.board.id)
+            if form.is_valid():
+                form.save()
+            return redirect('/tasks/board-view/' + task.category.board.id.__str__())
+
+        context = {'form': form}
+
+        return render(request, 'tasks/update-task.html', context)
+    else:
+        messages.add_message(request, messages.INFO, 'Access denied')
+        return redirect('/tasks/board-list/')
 
 
 def delete_task(request, pk):
-    item = Task.objects.get(id=pk)
+    item = Task.objects.get(id=pk)  # obtengo la tarea a eliminar
+    board = item.category.board  # obtengo el tablero al que pertenece la tarea
+    myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
+    boards = myUser.boardsToCollaborate.all()  # obtengo todos los tableros en los que el usuario es colaborador
 
-    if request.method == 'POST':
-        item.delete()
-        return redirect('/tasks/board-view/'+item.category.board.id.__str__())
+    if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a eliminar
 
-    context = {'item': item}
-    return render(request, 'tasks/delete-task.html', context)
+        if request.method == 'POST':
+            item.delete()
+            return redirect('/tasks/board-view/' + item.category.board.id.__str__())
+
+        context = {'item': item}
+        return render(request, 'tasks/delete-task.html', context)
+    else:
+        messages.add_message(request, messages.INFO, 'Access denied')
+        return redirect('/tasks/board-list/')
 
 
+"""
 class TaskDelete(DeleteView):
     model = Task
     form_class = TaskForm
@@ -56,22 +78,22 @@ class TaskDelete(DeleteView):
     success_url = '/tasks/board-view/'
 
 
-
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update-task.html'
+
     # success_url = '/tasks/board-view/'
 
 
-"""class CategoryCreate(CreateView):
+class CategoryCreate(CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/register.html'
-<<<<<<< HEAD
-    success_url = '/user/userList'"""
 
-"""def categoryCreate(request, pk):
+    success_url = '/user/userList'
+
+def categoryCreate(request, pk):
     if request.method == 'POST':
         formCategory = CategoryForm(request.POST)
         if formCategory.is_valid():
@@ -83,64 +105,145 @@ class TaskUpdate(UpdateView):
     return render(request, 'tasks/task-add.html', context)
 """
 
+
 #INVESTIGAR CÓMO FILTRAR BOARDS Y CATEGORÍAS EN EL FORM
 def board_view(request, pk):
-    board = Board.objects.get(id=pk)
-    categories = board.categories.all()
+    board = Board.objects.get(id=pk)    #obtengo el tablero pedido
+    myUser = MyUser.objects.get(id=request.user.id)    #MyUser logueado
+    boards = myUser.boardsToCollaborate.all()    #obtengo todos los tableros en los que el usuario es colaborador
+    collaborators = getTeamBoard(pk)
 
+    if board.owner == myUser or board in boards:  # Valido que el usuario que está viendo el tablero sea el dueño o un coladorador
 
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
+        categories = board.categories.all()
+
+        if request.method == 'POST':
+            form = TaskForm(request.POST, boardid=pk)
+            formCategory = CategoryForm(request.POST)
+
+            # Add task
+            if form.is_valid():
+                form.save()
+                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board, 'collaborators': collaborators}
+                return render(request, 'tasks/board-view.html', context)
+
+            # Add category
+            if formCategory.is_valid():
+
+                category = formCategory.save()
+                category.board = board
+                category.save()
+                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
+                return render(request, 'tasks/board-view.html', context)
+
+        form = TaskForm(request.POST, boardid=pk)
         formCategory = CategoryForm(request.POST)
-
-        #Add task
-        if form.is_valid():
-            form.save()
-            context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
-            return render(request, 'tasks/board-view.html', context)
-
-        #Add category
-        if formCategory.is_valid():
-            formCategory.save()
-            context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
-            return render(request, 'tasks/board-view.html', context)
+        context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
+        return render(request, 'tasks/board-view.html', context)
+    else:
+        messages.add_message(request, messages.INFO, 'Access denied')
+        return redirect('/tasks/board-list/')
 
 
+#A partir del id de un board retorna una lista con el owner y los colaboradores del tablero
+def getTeamBoard(pk_board):
+    board = Board.objects.get(pk=pk_board)
+    owner = board.owner
+    teamList = [owner]
+    users = MyUser.objects.all()
 
-    form = TaskForm()
-    formCategory = CategoryForm()
-    context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
-    return render(request, 'tasks/board-view.html', context)
+    for user in users:
+        boards = user.boardsToCollaborate.all()
+        for b in boards:
+            if b == board:
+                teamList.append(user)
+
+    return teamList
+
+
 
 def update_category(request, pk):
-    category = Category.objects.get(id=pk)
-    form = CategoryForm(instance=category)
+    category = Category.objects.get(id=pk)  # obtengo la categoria a editar
+    board = category.board  # obtengo el tablero al que pertenece la categoria
+    myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
+    boards = myUser.boardsToCollaborate.all()  # obtengo todos los tableros en los que el usuario es colaborador
 
-    if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-        return redirect('/tasks/board-view/'+category.board.id.__str__())
+    if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a editar
 
-    context = {'form': form}
+        form = CategoryForm(instance=category)
 
-    return render(request, 'tasks/update-category.html', context)
+        if request.method == 'POST':
+            form = CategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                form.save()
+            return redirect('/tasks/board-view/' + category.board.id.__str__())
+        context = {'form': form}
+        return render(request, 'tasks/update-category.html', context)
+    else:
+        messages.add_message(request, messages.INFO, 'Access denied')
+        return redirect('/tasks/board-list/')
 
 
 def delete_category(request, pk):
-    category = Category.objects.get(id=pk)
+    category = Category.objects.get(id=pk)  # obtengo la categoria a eliminar
+    board = category.board  # obtengo el tablero al que pertenece la categoria
+    myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
+    boards = myUser.boardsToCollaborate.all()  # obtengo todos los tableros en los que el usuario es colaborador
 
-    if request.method == 'POST':
-        category.delete()
-        return redirect('/tasks/board-view/'+category.board.id.__str__())
+    if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a eliminar
 
-    context = {'category': category}
-    return render(request, 'tasks/delete-category.html', context)
+        if request.method == 'POST':
+            category.delete()
+            return redirect('/tasks/board-view/' + category.board.id.__str__())
 
+        context = {'category': category}
+        return render(request, 'tasks/delete-category.html', context)
+    else:
+        messages.add_message(request, messages.INFO, 'Access denied')
+        return redirect('/tasks/board-list/')
+
+
+def board_list(request):
+    user = MyUser.objects.get(id=request.user.id)
+    own = Board.objects.filter(owner__id=user.id)
+    collaborations = user.boardsToCollaborate.all()
+
+    context = {'own': own, 'collaborations': collaborations}
+
+    return render(request, 'tasks/board-list.html', context)
+
+
+def board_update(request, pk):
+    board = Board.objects.get(id=pk)
+    user = MyUser.objects.get(pk=request.user.id)
+
+    if board.owner.id == user.id:
+
+        if request.method == 'POST':
+            board.name = request.POST['name']
+            board.save()
+
+
+        friends = user.friends.all()
+        context = {'board': board, 'friends': friends}
+        return render(request, 'tasks/board-update.html', context)
+
+    return render(request, 'tasks/board-list.html')
+
+
+
+"""
 class BoardList(ListView):
     model = Board
     template_name = 'tasks/board-list.html'
-    queryset = Board.objects.all()
+    # queryset = Board.objects.all()
+
+    def get_queryset(self):
+        own = Board.objects.filter(owner= self.request.user.id)
+        myuser = MyUser.objects.get(user_ptr_id = self.request.user.id)
+        collab = myuser.boardsToCollaborate.all()
+        return own | collab
+"""
 
 
 class BoardCreate(CreateView):
@@ -148,6 +251,13 @@ class BoardCreate(CreateView):
     form_class = BoardForm
     template_name = 'tasks/board-create.html'
     success_url = '/tasks/board-list/'
+
+    def form_valid(self, form):
+        board = form.save(commit=False)
+        board.owner_id = self.request.user.id
+        # app_model.user = User.objects.get(user=self.request.user) # Or explicit model
+        board.save()
+        return super().form_valid(form)
 
 
 class BoardDelete(DeleteView):
@@ -162,6 +272,9 @@ class BoardUpdate(UpdateView):
     form_class = BoardForm
     template_name = 'tasks/board-update.html'
     success_url = '/tasks/board-list/'
+
+
+
 
 """
 class CategoryList(ListView):
@@ -181,8 +294,4 @@ class TaskViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Board.objects.all()   # Por ahora trae todas las tasks
     serializer_class = BoardSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-
-
-
 

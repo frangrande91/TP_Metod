@@ -7,22 +7,58 @@
                 <h2 class="display-5">Your boards</h2>
             </div>
             <div class="col-2">
-                    <a href="{% url 'board-create' %}" class="btn btn-success">Create board</a>
+                    <a href="{% url 'board-create' %}" class="btn btn-secondary">Create board</a>
             </div>
         <hr>
-
-            {% for board in object_list %}
+          <div class="col-12">
+              <div class="display-6">My own boards</div>
+                  <hr>
+          </div>
+            {% for board in own %}
                 <div class="col-12">
                     <div class="card mb-3">
                       <div class="row g-0">
                         <div class="col-md-10">
+                            <a href="{% url 'board-view' board.id %}" class="btn btn-success" role="button" style="width: 100%; background-color: #35312D">
+                                <div style="padding: 30px; background-color: coral">
+                                    <b style="font-size: 20px; color: black">{{ board.name }}</b>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="card-body">
+                              <div class="row">
+                               <div class="col-6" style="padding: 10px;">
+                                    <a class="btn btn-info" href="{% url 'board-update' board.id %}"><i class="far fa-edit"></i></a>
+                                </div>
+                                <div class="col-6" style="padding: 10px;">
+                                    <a class="btn btn-danger" href="{% url 'board-delete' board.id %}"><i class="far fa-trash-alt"></i></a>
+                                </div>
+                              </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+         <div class="col-12">
+              <div class="display-6">Collaborations</div>
+                  <hr>
+          </div>
+            {% for board in collaborations %}
+                <div class="col-12">
+                    <div class="card mb-3">
+                      <div class="row g-0">
+                        <div class="col-md-12">
                             <a href="{% url 'board-view' board.id %}" class="btn btn-success" role="button" style="width: 100%">
                                 <div style="padding: 30px">
                                     <b style="font-size: 20px">{{ board.name }}</b>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-2">
+{% comment %}                        <div class="col-md-2">
                           <div class="card-body">
                               <div class="row">
                                <div class="col-6" style="padding: 10px;">
@@ -34,12 +70,21 @@
                               </div>
 
                           </div>
-                        </div>
+                        </div>{% endcomment %}
                       </div>
                     </div>
                 </div>
             {% endfor %}
-            </div>
+              {% if messages %}
+
+                        {% for message in messages %}
+                            {% if message.tags %}
+                                <p class="h5" style="background-color: coral">{{ message }}</p>
+                            {% endif %}
+                        {% endfor %}
+
+                {% endif %}
+        </div>
     </div>
 
 {% endblock %}

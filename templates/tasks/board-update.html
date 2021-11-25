@@ -3,7 +3,25 @@
     {% block content %}
         <h1 class="display-4" style="background-color: coral">Board update</h1>
         <form method="post">{% csrf_token %}
-            {{ form.as_p }}
+            <div class="row">
+                <div class="col-6">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" class="form-control" value="{{ board.name }}">
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                    <label for="collaborators">Select the collaborations</label>
+                    <select multiple class="form-control" id="collaborators" name="collaborators">
+                        {% for friend in friends %}
+                        <option value="friend">{{ friend }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+            </div>
+
+
+
             <button type="submit" value="Update" class="btn btn-dark">Update</button>
         </form>
     {% endblock %}

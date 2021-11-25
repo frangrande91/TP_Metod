@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+    {% block content %}
+        <form method="post">{% csrf_token %}
+            <p class="display-6">Do you want reject the request friend of "{{ sender.username }}"?</p>
+            <button type="submit" class="btn btn-danger btn-lg">Yes, reject</button>
+        </form>
+    {% endblock %}
