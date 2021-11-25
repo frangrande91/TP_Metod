@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+    {% block content %}
+        <form method="post">{% csrf_token %}
+            <p class="display-6">Do you want to stop being a contributor on the board "{{ board.name }}"?</p>
+            <button type="submit" class="btn btn-danger btn-lg">Yes, I want</button>
+            <a href="{% url 'board-list' %}" class="btn btn-success btn-lg">Cancel</a>
+            {% comment %}<a class="btn btn-dark" href="../../board-view/{{ item.category.board.id }}"  >Cancel</a>{% endcomment %}
+        </form>
+    {% endblock %}

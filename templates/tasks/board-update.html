@@ -12,8 +12,11 @@
                     <div class="form-group">
                     <label for="collaborators">Select the collaborations</label>
                     <select multiple class="form-control" id="collaborators" name="collaborators">
-                        {% for friend in friends %}
-                        <option value="friend">{{ friend }}</option>
+                        {% for friend in currently_collaborators %}
+                        <option selected value="{{ friend.id }}">{{ friend }}</option>
+                        {% endfor %}
+                        {% for friend in friends_no_collaborators %}
+                        <option value="{{ friend.id }}">{{ friend }}</option>
                         {% endfor %}
                     </select>
                   </div>
