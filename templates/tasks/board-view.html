@@ -42,7 +42,7 @@
             {% for category in categories %}
             <div class="col-4">
 
-                <div class="card border-primary mb-3" style="max-width: 25rem;">
+                <div class="card border-primary mb-3" style="max-width: 30rem;">
                       <div class="card-header">
                           <h4 class="card-title">{{ category.name }}
                               <a href="{% url 'update_category' category.id %}"><i class="far fa-edit"></i></a>
@@ -55,8 +55,8 @@
 
                                 {% for task in category.tasks.all %}
                                 <div class="row">
-                                    <div class="col-4" style="padding: 10px;">
-                                           <p class="card-text"><span>{{ task.title }}</span></p>
+                                    <div class="col-12" style="padding: 10px;">
+                                           <p class="card-text"><span style="font-weight: bold;">{{ task.title }}</span></p>
                                     </div>
                                     <div class="col-4" style="padding: 10px;">
                                            <p class="card-text"><span>Status: {{ task.status }}</span></p>
@@ -65,11 +65,15 @@
                                            <p class="card-text"><span>Assigned: {{ task.assigned }}</span></p>
                                     </div>
                                     <div class="col-4" style="padding: 10px;">
+                                           <p class="card-text"><span>Description: {{ task.description }}</span></p>
+                                    </div>
+                                    <div class="col-4" style="padding: 10px;">
                                         <a class="btn btn-info" href="{% url 'update_task' task.id %}"><i class="far fa-edit"></i></a>
                                         <a class="btn btn-danger" href="{% url 'delete_task' task.id %}"><i class="far fa-trash-alt"></i></a>
                                     </div>
 
                                 </div>
+                                    <hr>
                                 {% endfor %}
 
                             </div>

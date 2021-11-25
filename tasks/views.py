@@ -127,8 +127,6 @@ def board_view(request, pk):
             if form.is_valid():
                 form.save()
 
-                print(request.POST['assigned'])
-
                 context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
                 return render(request, 'tasks/board-view.html', context)
 

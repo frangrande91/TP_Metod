@@ -12,8 +12,9 @@ class TaskForm(ModelForm):
             queryset = Category.objects.filter(board_id=boardid),
             widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['assigned'] = forms.ModelChoiceField(
-            queryset = Board.objects.get(id=boardid).team #.add(Board.objects.get(id=boardid).owner),
+            queryset = Board.objects.get(id=boardid).team.all() | MyUser.objects.filter(id=Board.objects.get(id=boardid).owner.id).all() #.add(Board.objects.get(id=boardid).owner),
             ,widget=forms.Select(attrs={'class': 'form-control'}))
+        self.fields['assigned'].required = False
 
 
     class Meta:
@@ -25,7 +26,7 @@ class TaskForm(ModelForm):
             # 'category': forms.Select(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.TextInput(attrs={'class': 'form-control'}),
-            'assigned': forms.Select(attrs={'class': 'form-control'})
+            #'assigned': forms.Select(attrs={'class': 'form-control', ''},)
         }
 
 
