@@ -22,6 +22,7 @@ def list_task(request):
 
 ########## CRUD TASK AND CATEGORY #########
 
+
 def update_task(request, pk):
     task = Task.objects.get(id=pk)  #obtengo la tarea a editar
     board = task.category.board     #obtengo el tablero al que pertenece la tarea
@@ -73,10 +74,15 @@ class TaskDelete(DeleteView):
     template_name = 'tasks/delete-task.html'
     success_url = '/tasks/board-view/'
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8a790573c91dad819ec936cb10fe309d71008601
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update-task.html'
+
     # success_url = '/tasks/board-view/'
 
 
