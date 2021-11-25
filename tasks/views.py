@@ -25,6 +25,7 @@ def list_task(request):
 
 
 def update_task(request, pk):
+
     task = Task.objects.get(id=pk)  # obtengo la tarea a editar
     board = task.category.board  # obtengo el tablero al que pertenece la tarea
     myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
@@ -32,10 +33,10 @@ def update_task(request, pk):
 
     if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a editar
 
-        form = TaskForm(instance=task)
+        form = TaskForm(instance=task, boardid=task.category.board.id)
 
         if request.method == 'POST':
-            form = TaskForm(request.POST, instance=task)
+            form = TaskForm(request.POST, instance=task, boardid=task.category.board.id)
             if form.is_valid():
                 form.save()
             return redirect('/tasks/board-view/' + task.category.board.id.__str__())
@@ -110,12 +111,12 @@ def board_view(request, pk):
     boards = myUser.boardsToCollaborate.all()    #obtengo todos los tableros en los que el usuario es colaborador
     collaborators = getTeamBoard(pk)
 
-
     if board.owner == myUser or board in boards:  # Valido que el usuario que está viendo el tablero sea el dueño o un coladorador
+
         categories = board.categories.all()
 
         if request.method == 'POST':
-            form = TaskForm(request.POST)
+            form = TaskForm(request.POST, boardid=pk)
             formCategory = CategoryForm(request.POST)
 
             # Add task
@@ -126,13 +127,16 @@ def board_view(request, pk):
 
             # Add category
             if formCategory.is_valid():
-                formCategory.save()
-                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board, 'collaborators': collaborators}
+
+                category = formCategory.save()
+                category.board = board
+                category.save()
+                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
                 return render(request, 'tasks/board-view.html', context)
 
-        form = TaskForm()
-        formCategory = CategoryForm()
-        context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board, 'collaborators': collaborators}
+        form = TaskForm(request.POST, boardid=pk)
+        formCategory = CategoryForm(request.POST)
+        context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
         return render(request, 'tasks/board-view.html', context)
     else:
         messages.add_message(request, messages.INFO, 'Access denied')

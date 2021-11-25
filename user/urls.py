@@ -12,7 +12,7 @@ from user.views import *
 urlpatterns = [
     path('login/', userLogin, name='login'),
     #path('login/', Login.as_view()),
-    path('logout', login_required(logout_then_login)),
+    path('logout', login_required(logout_then_login), name='logout'),
     path('<int:user_id>/', login_required(userById)),
     #path('userList/', UserList.as_view()),
     path('register/', register),
