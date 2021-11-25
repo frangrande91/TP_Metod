@@ -26,6 +26,7 @@ def userLogin(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+
         #user = authenticate(request, username=username, password=password) NO FUNCIONA
         user = User.objects.get(username=username)
 

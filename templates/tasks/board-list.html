@@ -39,6 +39,15 @@
                     </div>
                 </div>
             {% endfor %}
+              {% if messages %}
+
+                        {% for message in messages %}
+                            {% if message.tags %}
+                                <p class="h5" style="background-color: coral">{{ message }}</p>
+                            {% endif %}
+                        {% endfor %}
+
+                {% endif %}
             </div>
     </div>
 
