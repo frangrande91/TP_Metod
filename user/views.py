@@ -26,7 +26,7 @@ def userLogin(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        #user = authenticate(request, username=username, password=password) NO FUNCIONA
+        #user = authenticate(request, username=username, password=password) SOLO FUNCIONA CON SUPERUSER
         user = MyUser.objects.get(username=username)
         #if user is not None:
         if user.password == password:

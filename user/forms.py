@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
+
+from user.models import MyUser
 
 
 class UserForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = MyUser
         fields = [
             'username',
             'first_name',
