@@ -37,8 +37,6 @@ class Category(models.Model):
 
 
 
-
-
 class Task(models.Model):
 
     class Status(TextChoices):
@@ -52,6 +50,8 @@ class Task(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='tasks')
     date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500, default='')
+    assigned = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True)
+
 
     def __str__(self):
         return self.title
