@@ -12,6 +12,9 @@ class MyUser(User):
     friends = models.ManyToManyField('user.MyUser', blank=True)
 
 
+class FriendRequest(models.Model):
+    sender = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, related_name='requestsSent')
+    receiver = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, related_name='requestsReceived')
 
     """def is_collaborate(self, user):
         is_collaborate = False

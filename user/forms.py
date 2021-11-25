@@ -3,6 +3,8 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from user.models import MyUser
 
+from user.models import MyUser
+
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -30,10 +32,10 @@ class UserForm(forms.ModelForm):
         }
 
 
-
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['username'].widget.attrs['placeholder'] = 'USUARIO'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+

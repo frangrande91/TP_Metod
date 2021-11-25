@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView, DetailView
 
 from user.forms import UserForm, LoginForm
-from user.models import MyUser
+from user.models import MyUser, FriendRequest
 
 
 def home(request):
@@ -26,8 +26,10 @@ def userLogin(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        #user = authenticate(request, username=username, password=password) SOLO FUNCIONA CON SUPERUSER
-        user = MyUser.objects.get(username=username)
+
+        #user = authenticate(request, username=username, password=password) NO FUNCIONA
+        user = User.objects.get(username=username)
+
         #if user is not None:
         if user.password == password:
             login(request, user)
@@ -92,7 +94,90 @@ class UserDelete(DeleteView):
     success_url = '/user/userList'
 
 
-class UserDetail(DetailView):
+class FriendList(DetailView):
     model = MyUser
-    template_name = 'user/friends.html'
+    template_name = 'user/friends-list.html'
 
+
+def friends_add(request):
+    item = None
+    user_logged = MyUser.objects.get(pk=request.user.id)
+    friends = user_logged.friends
+
+    friend_requests_received = FriendRequest.objects.filter(receiver__id=user_logged.id)
+    friend_requests_sent = FriendRequest.objects.filter(sender__id=user_logged.id)
+
+    if request.method == 'POST':
+        try:
+            item = MyUser.objects.get(username=request.POST['username'])
+            quantity_friends = friends.filter(username=item.username).count()
+            quantity_requests_received = friend_requests_received.filter(sender__id=item.id).count()
+            quantity_requests_sent = friend_requests_sent.filter(receiver__id=item.id).count()
+
+            # Condiciones para que el usuario tenga posibilidad de mandar solicitud a otro usuario
+            # No tiene que estar en su lista de amigos, y no tienen que tener solicitudes de amistad en comun pendientes
+            if request.user.id != item.id and quantity_friends == 0 and quantity_requests_received == 0 and quantity_requests_sent == 0:
+                context = {'item': item, 'friend_requests_received': friend_requests_received}
+                return render(request, 'user/friends-add.html', context)
+            else:
+                item = None
+        except MyUser.DoesNotExist:
+            item = None
+
+    context = {'item': item, 'friend_requests_received': friend_requests_received}
+    return render(request, 'user/friends-add.html', context)
+
+
+def friend_request_send(request, pk):
+    sender = MyUser.objects.get(pk=request.user.id)
+    friend_to_add = MyUser.objects.get(id=pk)
+    context = {'friend_to_add': friend_to_add}
+
+    if request.method == 'POST':
+        friend_request = FriendRequest()
+        friend_request.sender = sender
+        friend_request.receiver = friend_to_add
+        friend_request.save()
+        return redirect('/user/friends-add/')
+
+    return render(request, 'user/friend-request-send.html', context)
+
+
+def friend_request_confirm(request, pk_friend):
+    try:
+        receiver = MyUser.objects.get(pk=request.user.id)
+        sender = MyUser.objects.get(pk=pk_friend)
+        friend_request = FriendRequest.objects.get(receiver__id=receiver.id, sender__id=sender.id)
+
+        if request.method == 'POST':
+            receiver.friends.add(sender)
+            sender.friends.add(receiver)
+            receiver.save()
+            sender.save()
+            friend_request.delete()
+            return redirect('/user/friends-add/')
+
+        context = {'sender': sender}
+        return render(request, 'user/friend-request-confirm.html', context)
+    except MyUser.DoesNotExist:
+        return redirect('/user/friends-add/')
+    except FriendRequest.DoesNotExist:
+        return redirect('/user/friends-add/')
+
+
+def friend_request_reject(request, pk_friend):
+    try:
+        receiver = MyUser.objects.get(pk=request.user.id)
+        sender = MyUser.objects.get(pk=pk_friend)
+        friend_request = FriendRequest.objects.get(receiver__id=receiver.id, sender__id=sender.id)
+
+        if request.method == 'POST':
+            friend_request.delete()
+            return redirect('/user/friends-add/')
+
+        context = {'sender': sender}
+        return render(request, 'user/friend-request-reject.html', context)
+    except MyUser.DoesNotExist:
+        return redirect('/user/friends-add/')
+    except FriendRequest.DoesNotExist:
+        return redirect('/user/friends-add/')

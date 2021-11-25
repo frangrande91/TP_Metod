@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+    {% block content %}
+        <form method="post">{% csrf_token %}
+            <p class="display-6">Do you want accept as friend to "{{ sender.username }}"?</p>
+            <button type="submit" class="btn btn-success btn-lg">Accept</button>
+            {% comment %}<a class="btn btn-dark" href="../../board-view/{{ item.category.board.id }}"  >Cancel</a>{% endcomment %}
+        </form>
+    {% endblock %}
