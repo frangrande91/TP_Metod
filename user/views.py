@@ -49,29 +49,28 @@ def userById(request, user_id):
     user = MyUser.objects.get(id=user_id)
     return render(request, 'user/profile.html', {'user': user})
 
-
+"""
 class UserList(ListView):
     model = MyUser
     template_name = 'user/userList.html'
-    queryset = User.objects.all()
+    queryset = User.objects.all()"""
 
-
+"""
 class Register(CreateView):
     model = MyUser
     form_class = UserForm
     template_name = 'user/register.html'
-    success_url = '/user/userList'
+    success_url = '/tasks/board-list'"""
 
 
 def register(request):
-
     logout(request)
     form = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('login')
+        return redirect('board-list')
 
     context = {'form': form}
 
@@ -82,14 +81,14 @@ class UserUpdate(UpdateView):
     model = MyUser
     form_class = UserForm
     template_name = 'user/update.html'
-    success_url = '/user/userList'
+    success_url = '/tasks/board-list'
 
-
+"""
 class UserDelete(DeleteView):
     model = MyUser
     form_class = UserForm
     template_name = 'user/delete.html'
-    success_url = '/user/userList'
+    success_url = '/user/login'"""
 
 
 class UserDetail(DetailView):
