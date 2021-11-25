@@ -26,6 +26,14 @@ class Board(models.Model):
 
         return is_owner
 
+    def is_collaborate(self, user):
+        team = self.team.all()
+
+        for col in team:
+            if col.id == user.id:
+                return True
+
+        return False
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
