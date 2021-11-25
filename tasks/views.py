@@ -8,6 +8,8 @@ from django.utils.decorators import method_decorator
 from .form import *
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
+from tasks.serializers import TaskSerializer, CategorySerializer, BoardSerializer
+from rest_framework import viewsets, permissions
 
 """
 def list_task(request):
@@ -322,3 +324,11 @@ class TaskAdd(CreateView):
     form_class = TaskForm
     template_name = 'tasks/task-add.html'
     success_url = 'tasks/board-view.html'"""
+
+class TaskViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(assigned_id=self.request.user.id)
+
