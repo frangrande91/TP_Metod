@@ -291,7 +291,9 @@ class TaskAdd(CreateView):
     success_url = 'tasks/board-view.html'"""
 
 class TaskViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Board.objects.all()   # Por ahora trae todas las tasks
-    serializer_class = BoardSerializer
+    serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(assigned_id=self.request.user.id)
 

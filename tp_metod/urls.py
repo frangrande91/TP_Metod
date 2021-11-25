@@ -18,11 +18,12 @@ from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 from tasks.views import TaskViewSet
 from rest_framework import routers
+from tasks.models import Task
 
 from user.views import home, userLogin#, Login
 
 router = routers.DefaultRouter()
-router.register(r'tasks', TaskViewSet)
+router.register(r'tasks_endpoint', TaskViewSet, basename=Task)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,4 @@ urlpatterns = [
     path('tasks/', include('tasks.url')),
     path('', include(router.urls)), # URL endpoint http://localhost:8000/tasks
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')) # Auth para acceder al endpoint
-
-
 ]

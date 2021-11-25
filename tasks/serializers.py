@@ -1,22 +1,26 @@
 from rest_framework import serializers
 from tasks.models import Task, Board, Category
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
+class BoardSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = Task
-        fields = ['id', 'title', 'date', 'description'] # Campos que se serializan
+        model = Board
+        fields = ['id', 'name']  # Campos que se serializan
 
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    tasks = TaskSerializer(many = True)
+    board = BoardSerializer()
     class Meta:
         model = Category
-        fields = ['id', 'name', 'tasks']  # Campos que se serializan
+        fields = ['id', 'name', 'board']  # Campos que se serializan
 
 
-class BoardSerializer(serializers.HyperlinkedModelSerializer):
-    categories = CategorySerializer(many = True)
+class TaskSerializer(serializers.HyperlinkedModelSerializer):
+
+    category = CategorySerializer(many=False, read_only=True)
+
     class Meta:
-        model = Board
-        fields = ['id', 'name', 'categories']  # Campos que se serializan
+        model = Task
+        fields = ['id', 'title', 'date', 'description', 'status', 'assigned_id', 'category'] # Campos que se serializan
+
+
