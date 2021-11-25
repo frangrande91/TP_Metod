@@ -28,6 +28,7 @@ def list_task(request):
 
 
 def update_task(request, pk):
+
     task = Task.objects.get(id=pk)  # obtengo la tarea a editar
     board = task.category.board  # obtengo el tablero al que pertenece la tarea
     myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
@@ -35,10 +36,10 @@ def update_task(request, pk):
 
     if board.owner == myUser or board in boards:  # Valido que el usuario sea el dueño o un coladorador del tablero a la que pertenece la categoría a editar
 
-        form = TaskForm(instance=task)
+        form = TaskForm(instance=task, boardid=task.category.board.id)
 
         if request.method == 'POST':
-            form = TaskForm(request.POST, instance=task)
+            form = TaskForm(request.POST, instance=task, boardid=task.category.board.id)
             if form.is_valid():
                 form.save()
             return redirect('/tasks/board-view/' + task.category.board.id.__str__())
@@ -77,10 +78,7 @@ class TaskDelete(DeleteView):
     template_name = 'tasks/delete-task.html'
     success_url = '/tasks/board-view/'
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8a790573c91dad819ec936cb10fe309d71008601
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskForm
@@ -93,7 +91,7 @@ class CategoryCreate(CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'tasks/register.html'
-<<<<<<< HEAD
+
     success_url = '/user/userList'
 
 def categoryCreate(request, pk):
@@ -109,38 +107,60 @@ def categoryCreate(request, pk):
 """
 
 
-# INVESTIGAR CÓMO FILTRAR BOARDS Y CATEGORÍAS EN EL FORM
+#INVESTIGAR CÓMO FILTRAR BOARDS Y CATEGORÍAS EN EL FORM
 def board_view(request, pk):
-    board = Board.objects.get(id=pk)  # obtengo el tablero pedido
-    myUser = MyUser.objects.get(id=request.user.id)  # MyUser logueado
-    boards = myUser.boardsToCollaborate.all()  # obtengo todos los tableros en los que el usuario es colaborador
+    board = Board.objects.get(id=pk)    #obtengo el tablero pedido
+    myUser = MyUser.objects.get(id=request.user.id)    #MyUser logueado
+    boards = myUser.boardsToCollaborate.all()    #obtengo todos los tableros en los que el usuario es colaborador
+    collaborators = getTeamBoard(pk)
 
     if board.owner == myUser or board in boards:  # Valido que el usuario que está viendo el tablero sea el dueño o un coladorador
+
         categories = board.categories.all()
 
         if request.method == 'POST':
-            form = TaskForm(request.POST)
+            form = TaskForm(request.POST, boardid=pk)
             formCategory = CategoryForm(request.POST)
 
             # Add task
             if form.is_valid():
                 form.save()
-                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
+                context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board, 'collaborators': collaborators}
                 return render(request, 'tasks/board-view.html', context)
 
             # Add category
             if formCategory.is_valid():
-                formCategory.save()
+
+                category = formCategory.save()
+                category.board = board
+                category.save()
                 context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
                 return render(request, 'tasks/board-view.html', context)
 
-        form = TaskForm()
-        formCategory = CategoryForm()
+        form = TaskForm(request.POST, boardid=pk)
+        formCategory = CategoryForm(request.POST)
         context = {'categories': categories, 'form': form, 'formCategory': formCategory, 'board': board}
         return render(request, 'tasks/board-view.html', context)
     else:
         messages.add_message(request, messages.INFO, 'Access denied')
         return redirect('/tasks/board-list/')
+
+
+#A partir del id de un board retorna una lista con el owner y los colaboradores del tablero
+def getTeamBoard(pk_board):
+    board = Board.objects.get(pk=pk_board)
+    owner = board.owner
+    teamList = [owner]
+    users = MyUser.objects.all()
+
+    for user in users:
+        boards = user.boardsToCollaborate.all()
+        for b in boards:
+            if b == board:
+                teamList.append(user)
+
+    return teamList
+
 
 
 def update_category(request, pk):
