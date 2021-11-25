@@ -10,8 +10,11 @@
                     <a href="{% url 'board-create' %}" class="btn btn-success">Create board</a>
             </div>
         <hr>
-
-            {% for board in object_list %}
+          <div class="col-12">
+              <div class="display-6">My own boards</div>
+                  <hr>
+          </div>
+            {% for board in own %}
                 <div class="col-12">
                     <div class="card mb-3">
                       <div class="row g-0">
@@ -39,6 +42,39 @@
                     </div>
                 </div>
             {% endfor %}
+
+         <div class="col-12">
+              <div class="display-6">Collaborations</div>
+                  <hr>
+          </div>
+            {% for board in collaborations %}
+                <div class="col-12">
+                    <div class="card mb-3">
+                      <div class="row g-0">
+                        <div class="col-md-12">
+                            <a href="{% url 'board-view' board.id %}" class="btn btn-success" role="button" style="width: 100%">
+                                <div style="padding: 30px">
+                                    <b style="font-size: 20px">{{ board.name }}</b>
+                                </div>
+                            </a>
+                        </div>
+{% comment %}                        <div class="col-md-2">
+                          <div class="card-body">
+                              <div class="row">
+                               <div class="col-6" style="padding: 10px;">
+                                    <a class="btn btn-info" href="{% url 'board-update' board.id %}">Update</a>
+                                </div>
+                                <div class="col-6" style="padding: 10px;">
+                                    <a class="btn btn-danger" href="{% url 'board-delete' board.id %}">Delete</a>
+                                </div>
+                              </div>
+
+                          </div>
+                        </div>{% endcomment %}
+                      </div>
+                    </div>
+                </div>
+            {% endfor %}
               {% if messages %}
 
                         {% for message in messages %}
@@ -48,7 +84,7 @@
                         {% endfor %}
 
                 {% endif %}
-            </div>
+        </div>
     </div>
 
 {% endblock %}
